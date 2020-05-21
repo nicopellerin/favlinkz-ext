@@ -9,10 +9,10 @@ document.getElementById("signIn").style.display = "none";
 document.getElementById("signOut").style.display = "none";
 
 firebase.auth().onAuthStateChanged((firebaseUser) => {
-  if (firebaseUser) {
-    document.getElementById("addLink").style.display = "block";
-    document.getElementById("signIn").style.display = "none";
-    document.getElementById("signOut").style.display = "block";
+  if (!firebaseUser) {
+    document.getElementById("addLink").style.display = "none";
+    document.getElementById("signIn").style.display = "block";
+    document.getElementById("signOut").style.display = "none";
   }
   const usersRef = db.collection("users").doc(firebaseUser.uid);
   usersRef.get().then(() => {
@@ -26,10 +26,12 @@ firebase.auth().onAuthStateChanged((firebaseUser) => {
     if (firebaseUser) {
       document.getElementById("signIn").style.display = "none";
       document.getElementById("addLink").style.display = "block";
+      document.getElementById("signOut").style.display = "block";
       db.collection("users").doc(user.uid).set(user, { merge: true });
     } else {
       document.getElementById("signIn").style.display = "block";
       document.getElementById("addLink").style.display = "none";
+      document.getElementById("signOut").style.display = "none";
     }
   });
 });
@@ -94,9 +96,6 @@ const sendUrlData = async () => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  loggedInUser
-    ? (document.getElementById("signIn").style.display = "none")
-    : (document.getElementById("signIn").style.display = "block");
   document.getElementById("addLink").style.display = "none";
 });
 
