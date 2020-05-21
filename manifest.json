@@ -12,7 +12,7 @@
     "default_title": "favlinkz"
   },
   "version": "1.0",
-  "permissions": ["identity", "activeTab", "tabs"],
+  "permissions": ["identity", "activeTab", "tabs", "storage"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

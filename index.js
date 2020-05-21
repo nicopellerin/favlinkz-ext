@@ -2,12 +2,23 @@
 import { db } from "./firebase.js";
 import { handleSignIn } from "./auth.js";
 
+// Checks if user info is in storage
+chrome.storage.sync.get("user", function (result) {
+  console.log("Value currently is " + result.user);
+  if (result.user !== "undefined") {
+    document.getElementById("signIn").style.display = "none";
+    document.getElementById("addLink").style.display = "block";
+    document.getElementById("signOut").style.display = "block";
+  }
+});
+
 let chromeUrl, chromeTitle, img, desc, note, fetchingData, loggedInUser;
 
 // Hide signIn/signOut buttons before checking if auth changed
 document.getElementById("signIn").style.display = "none";
 document.getElementById("signOut").style.display = "none";
 
+// Watches firebase auth state changes
 firebase.auth().onAuthStateChanged((firebaseUser) => {
   if (!firebaseUser) {
     document.getElementById("addLink").style.display = "none";
@@ -102,14 +113,14 @@ document.addEventListener("DOMContentLoaded", () => {
 document.getElementById("signIn").addEventListener("click", () => {
   const user = handleSignIn();
   loggedInUser = user;
-  loggedInUser
-    ? (document.getElementById("signIn").style.display = "none")
-    : (document.getElementById("addLink").style.display = "none");
 });
 
 document.getElementById("addLink").addEventListener("click", sendUrlData);
 document.getElementById("signOut").addEventListener("click", () => {
   firebase.auth().signOut();
+  chrome.storage.sync.remove("user", function () {
+    console.log("Key removed");
+  });
   document.getElementById("signIn").style.display = "block";
   document.getElementById("addLink").style.display = "none";
   document.getElementById("signOut").style.display = "none";

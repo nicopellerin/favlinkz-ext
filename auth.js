@@ -1,4 +1,4 @@
-const startAuth = (interactive) => {
+export const startAuth = (interactive = true) => {
   // Request an OAuth token from the Chrome Identity API.
   chrome.identity.getAuthToken({ interactive: !!interactive }, function (
     token
@@ -24,7 +24,9 @@ const startAuth = (interactive) => {
             );
           }
         });
-      console.log(credential);
+      chrome.storage.sync.set({ user: credential }, function () {
+        console.log("Value is set to " + credential);
+      });
     } else {
       console.error("The OAuth Token was null");
     }
