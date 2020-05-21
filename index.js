@@ -19,6 +19,7 @@ firebase.auth().onAuthStateChanged((firebaseUser) => {
     document.getElementById("addLink").style.display = "none";
     document.getElementById("signIn").style.display = "block";
     document.getElementById("signOut").style.display = "none";
+    return;
   }
   const usersRef = db.collection("users").doc(firebaseUser.uid);
   usersRef.get().then(() => {
