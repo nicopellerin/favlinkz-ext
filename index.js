@@ -4,7 +4,6 @@ import { handleSignIn } from "./auth.js";
 
 // Checks if user info is in storage
 chrome.storage.sync.get("user", function (result) {
-  console.log("Value currently is " + result.user);
   if (result.user !== "undefined") {
     document.getElementById("signIn").style.display = "none";
     document.getElementById("addLink").style.display = "block";
@@ -74,7 +73,7 @@ const getHtml = async () => {
   }
 };
 
-const sendUrlData = async () => {
+const sendLinkData = async () => {
   await getHtml();
 
   const dataUrl = {
@@ -86,20 +85,19 @@ const sendUrlData = async () => {
     created: Date.now(),
   };
 
-  console.log(dataUrl);
-  console.log(loggedInUser.uid);
-
   // Push dataUrl object to Firebase
   const usersRef = db.collection("users").doc(loggedInUser.uid);
 
-  usersRef.get().then((doc) => {
-    console.log(doc.data().links);
-    const previousLinks = doc.data().links || [];
-    const updatedLinks = [...previousLinks, dataUrl];
+  // *** TODO *** - Fix structure
 
-    usersRef.update({ links: updatedLinks });
-  });
-  fetchingData = false;
+  // usersRef.get().then((doc) => {
+  //   console.log(doc.data().links);
+  //   const previousLinks = doc.data().links || [];
+  //   const updatedLinks = [...previousLinks, dataUrl];
+
+  //   usersRef.update({ links: updatedLinks });
+  // });
+  // fetchingData = false;
   // setLinkPosted(true);
   // setTimeout(() => {
   //   setLinkPosted(false);
@@ -115,11 +113,11 @@ document.getElementById("signIn").addEventListener("click", () => {
   loggedInUser = user;
 });
 
-document.getElementById("addLink").addEventListener("click", sendUrlData);
+document.getElementById("addLink").addEventListener("click", sendLinkData);
 document.getElementById("signOut").addEventListener("click", () => {
   firebase.auth().signOut();
   chrome.storage.sync.remove("user", function () {
-    console.log("Key removed");
+    console.log("User info removed");
   });
   document.getElementById("signIn").style.display = "block";
   document.getElementById("addLink").style.display = "none";
