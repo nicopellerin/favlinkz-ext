@@ -10,8 +10,8 @@ document.getElementById("signOut").style.display = "none";
 
 firebase.auth().onAuthStateChanged((firebaseUser) => {
   if (firebaseUser) {
-    document.getElementById("signIn").style.display = "block";
-    document.getElementById("addLink").style.display = "none";
+    document.getElementById("addLink").style.display = "block";
+    document.getElementById("signIn").style.display = "none";
     document.getElementById("signOut").style.display = "block";
   }
   const usersRef = db.collection("users").doc(firebaseUser.uid);
