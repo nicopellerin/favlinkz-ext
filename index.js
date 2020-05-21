@@ -104,16 +104,13 @@ const sendLinkData = async () => {
   // }, 1000);
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("addLink").style.display = "none";
-});
-
 document.getElementById("signIn").addEventListener("click", () => {
   const user = handleSignIn();
   loggedInUser = user;
 });
 
 document.getElementById("addLink").addEventListener("click", sendLinkData);
+
 document.getElementById("signOut").addEventListener("click", () => {
   firebase.auth().signOut();
   chrome.storage.sync.remove("user", function () {
