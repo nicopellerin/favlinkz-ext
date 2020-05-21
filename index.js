@@ -2,6 +2,8 @@
 import { db } from "./firebase.js";
 import { handleSignIn } from "./auth.js";
 
+let chromeUrl, chromeTitle, img, desc, note, fetchingData, loggedInUser;
+
 // Checks if user info is in storage
 chrome.storage.sync.get("user", function (result) {
   if (result.user !== "undefined") {
@@ -10,12 +12,6 @@ chrome.storage.sync.get("user", function (result) {
     document.getElementById("signOut").style.display = "block";
   }
 });
-
-let chromeUrl, chromeTitle, img, desc, note, fetchingData, loggedInUser;
-
-// Hide signIn/signOut buttons before checking if auth changed
-document.getElementById("signIn").style.display = "none";
-document.getElementById("signOut").style.display = "none";
 
 // Watches firebase auth state changes
 firebase.auth().onAuthStateChanged((firebaseUser) => {
