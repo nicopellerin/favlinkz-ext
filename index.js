@@ -15,6 +15,7 @@ chrome.storage.sync.get("user", function (result) {
     document.getElementById("note").style.display = "block";
     document.querySelector(".app").style.background = "#fbf7ff";
     document.querySelector(".app").style.borderColor = "#FBF8FF";
+    document.querySelector(".app").style.borderRadius = 0;
   }
 });
 
@@ -29,6 +30,7 @@ firebase.auth().onAuthStateChanged((firebaseUser) => {
     document.getElementById("note").style.display = "none";
     document.querySelector(".app").style.background = "#5856d7";
     document.querySelector(".app").style.borderColor = "#615de0";
+    document.querySelector(".app").style.borderRadius = "120px";
 
     return;
   }
@@ -50,6 +52,7 @@ firebase.auth().onAuthStateChanged((firebaseUser) => {
       document.getElementById("note").style.display = "block";
       document.querySelector(".app").style.background = "#fbf7ff";
       document.querySelector(".app").style.borderColor = "#FBF8FF";
+      document.querySelector(".app").style.borderRadius = 0;
 
       db.collection("users").doc(user.uid).set(user, { merge: true });
     } else {
@@ -60,6 +63,7 @@ firebase.auth().onAuthStateChanged((firebaseUser) => {
       document.getElementById("note").style.display = "none";
       document.querySelector(".app").style.background = "#5856d7";
       document.querySelector(".app").style.borderColor = "#615de0";
+      document.querySelector(".app").style.borderRadius = "120px";
     }
   });
 });
@@ -142,4 +146,5 @@ document.getElementById("signOut").addEventListener("click", () => {
   document.querySelector(".app").style.background = "#5856d7";
   document.querySelector(".app").style.borderColor = "#615de0";
   document.getElementById("signIn").textContent = "Sign-in with Google";
+  document.querySelector(".app").style.borderRadius = "120px";
 });
