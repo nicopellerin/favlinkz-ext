@@ -141,4 +141,5 @@ document.getElementById("signOut").addEventListener("click", () => {
   document.getElementById("note").style.display = "none";
   document.querySelector(".app").style.background = "#5856d7";
   document.querySelector(".app").style.borderColor = "#615de0";
+  document.getElementById("signIn").textContent = "Sign-in with Google";
 });

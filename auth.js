@@ -1,4 +1,5 @@
 const startAuthProcess = (interactive = true) => {
+  document.getElementById("signIn").textContent = "Signing in...";
   // Request an OAuth token from the Chrome Identity API.
   chrome.identity.getAuthToken({ interactive: !!interactive }, function (
     token
@@ -31,6 +32,7 @@ const startAuthProcess = (interactive = true) => {
         console.log("Value is set to " + credential);
       });
     } else {
+      document.getElementById("signIn").textContent = "Sign-in with Google";
       console.error("The OAuth Token was null");
     }
   });
