@@ -3,9 +3,9 @@
   "name": "favlinkz",
   "manifest_version": 2,
   "icons": {
-    "16": "./assets/icon16.png",
-    "48": "./assets/icon48.png",
-    "128": "./assets/icon128.png"
+    "16": "./assets/icon_20.png",
+    "48": "./assets/icon_48.png",
+    "128": "./assets/icon_144.png"
   },
   "browser_action": {
     "default_popup": "index.html",

@@ -8,8 +8,13 @@ let chromeUrl, chromeTitle, img, desc, note, fetchingData, loggedInUser;
 chrome.storage.sync.get("user", function (result) {
   if (result.user !== "undefined") {
     document.getElementById("signIn").style.display = "none";
+    document.getElementById("logo").style.display = "none";
+    document.getElementById("logo-loggedIn").style.display = "block";
     document.getElementById("addLink").style.display = "block";
     document.getElementById("signOut").style.display = "block";
+    document.getElementById("note").style.display = "block";
+    document.querySelector(".app").style.background = "#fbf7ff";
+    document.querySelector(".app").style.borderColor = "#FBF8FF";
   }
 });
 
@@ -17,8 +22,14 @@ chrome.storage.sync.get("user", function (result) {
 firebase.auth().onAuthStateChanged((firebaseUser) => {
   if (!firebaseUser) {
     document.getElementById("addLink").style.display = "none";
+    document.getElementById("logo").style.display = "block";
+    document.getElementById("logo-loggedIn").style.display = "none";
     document.getElementById("signIn").style.display = "block";
     document.getElementById("signOut").style.display = "none";
+    document.getElementById("note").style.display = "none";
+    document.querySelector(".app").style.background = "#5856d7";
+    document.querySelector(".app").style.borderColor = "#615de0";
+
     return;
   }
   const usersRef = db.collection("users").doc(firebaseUser.uid);
@@ -31,14 +42,24 @@ firebase.auth().onAuthStateChanged((firebaseUser) => {
     };
     loggedInUser = user;
     if (firebaseUser) {
+      document.getElementById("logo").style.display = "none";
+      document.getElementById("logo-loggedIn").style.display = "block";
       document.getElementById("signIn").style.display = "none";
       document.getElementById("addLink").style.display = "block";
       document.getElementById("signOut").style.display = "block";
+      document.getElementById("note").style.display = "block";
+      document.querySelector(".app").style.background = "#fbf7ff";
+      document.querySelector(".app").style.borderColor = "#FBF8FF";
+
       db.collection("users").doc(user.uid).set(user, { merge: true });
     } else {
+      document.getElementById("logo").style.display = "block";
       document.getElementById("signIn").style.display = "block";
       document.getElementById("addLink").style.display = "none";
       document.getElementById("signOut").style.display = "none";
+      document.getElementById("note").style.display = "none";
+      document.querySelector(".app").style.background = "#5856d7";
+      document.querySelector(".app").style.borderColor = "#615de0";
     }
   });
 });
@@ -113,7 +134,11 @@ document.getElementById("signOut").addEventListener("click", () => {
   chrome.storage.sync.remove("user", function () {
     console.log("User info removed");
   });
+  document.getElementById("logo").style.display = "block";
   document.getElementById("signIn").style.display = "block";
   document.getElementById("addLink").style.display = "none";
   document.getElementById("signOut").style.display = "none";
+  document.getElementById("note").style.display = "none";
+  document.querySelector(".app").style.background = "#5856d7";
+  document.querySelector(".app").style.borderColor = "#615de0";
 });

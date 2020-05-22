@@ -1,4 +1,4 @@
-export const startAuth = (interactive = true) => {
+const startAuthProcess = (interactive = true) => {
   // Request an OAuth token from the Chrome Identity API.
   chrome.identity.getAuthToken({ interactive: !!interactive }, function (
     token
@@ -9,7 +9,10 @@ export const startAuth = (interactive = true) => {
       console.error(chrome.runtime.lastError);
     } else if (token) {
       // Authorize Firebase with the OAuth Access Token.
-      var credential = firebase.auth.GoogleAuthProvider.credential(null, token);
+      const credential = firebase.auth.GoogleAuthProvider.credential(
+        null,
+        token
+      );
       firebase
         .auth()
         .signInWithCredential(credential)
@@ -35,7 +38,7 @@ export const startAuth = (interactive = true) => {
 
 export const handleSignIn = () => {
   try {
-    startAuth(true);
+    startAuthProcess(true);
     return firebase.auth().currentUser;
   } catch (err) {
     console.error(err);
