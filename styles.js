@@ -3,6 +3,7 @@ export const notLoggedInStyles = () => {
   document.getElementById("logo").style.display = "block";
   document.getElementById("logo-loggedIn").style.display = "none";
   document.getElementById("signIn").style.display = "block";
+  document.getElementById("signIn").innerText = "Sign-in with Google";
   document.getElementById("signOut").style.display = "none";
   document.getElementById("note").style.display = "none";
   document.querySelector(".app").style.background = "#5856d7";
