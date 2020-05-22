@@ -1,39 +1,21 @@
 /*global chrome*/
 import { db } from "./firebase.js";
 import { handleSignIn } from "./auth.js";
+import { loggedInStyles, notLoggedInStyles } from "./styles.js";
 
 let chromeUrl, chromeTitle, img, desc, note, fetchingData, loggedInUser;
 
 // Checks if user info is in storage
 chrome.storage.sync.get("user", function (result) {
-  if (result.user !== "undefined") {
-    document.getElementById("signIn").style.display = "none";
-    document.getElementById("logo").style.display = "none";
-    document.getElementById("logo-loggedIn").style.display = "block";
-    document.getElementById("addLink").style.display = "block";
-    document.getElementById("signOut").style.display = "block";
-    document.getElementById("note").style.display = "block";
-    document.querySelector(".app").style.background = "#fbf7ff";
-    document.querySelector(".app").style.borderColor = "#FBF8FF";
-    document.querySelector(".app").style.borderRadius = 0;
+  if (result.user) {
+    loggedInStyles();
+  } else {
+    notLoggedInStyles();
   }
 });
 
 // Watches firebase auth state changes
 firebase.auth().onAuthStateChanged((firebaseUser) => {
-  if (!firebaseUser) {
-    document.getElementById("addLink").style.display = "none";
-    document.getElementById("logo").style.display = "block";
-    document.getElementById("logo-loggedIn").style.display = "none";
-    document.getElementById("signIn").style.display = "block";
-    document.getElementById("signOut").style.display = "none";
-    document.getElementById("note").style.display = "none";
-    document.querySelector(".app").style.background = "#5856d7";
-    document.querySelector(".app").style.borderColor = "#615de0";
-    document.querySelector(".app").style.borderRadius = "120px";
-
-    return;
-  }
   const usersRef = db.collection("users").doc(firebaseUser.uid);
   usersRef.get().then(() => {
     const user = {
@@ -44,26 +26,10 @@ firebase.auth().onAuthStateChanged((firebaseUser) => {
     };
     loggedInUser = user;
     if (firebaseUser) {
-      document.getElementById("logo").style.display = "none";
-      document.getElementById("logo-loggedIn").style.display = "block";
-      document.getElementById("signIn").style.display = "none";
-      document.getElementById("addLink").style.display = "block";
-      document.getElementById("signOut").style.display = "block";
-      document.getElementById("note").style.display = "block";
-      document.querySelector(".app").style.background = "#fbf7ff";
-      document.querySelector(".app").style.borderColor = "#FBF8FF";
-      document.querySelector(".app").style.borderRadius = 0;
-
+      loggedInStyles();
       db.collection("users").doc(user.uid).set(user, { merge: true });
     } else {
-      document.getElementById("logo").style.display = "block";
-      document.getElementById("signIn").style.display = "block";
-      document.getElementById("addLink").style.display = "none";
-      document.getElementById("signOut").style.display = "none";
-      document.getElementById("note").style.display = "none";
-      document.querySelector(".app").style.background = "#5856d7";
-      document.querySelector(".app").style.borderColor = "#615de0";
-      document.querySelector(".app").style.borderRadius = "120px";
+      notLoggedInStyles();
     }
   });
 });
@@ -138,13 +104,5 @@ document.getElementById("signOut").addEventListener("click", () => {
   chrome.storage.sync.remove("user", function () {
     console.log("User info removed");
   });
-  document.getElementById("logo").style.display = "block";
-  document.getElementById("signIn").style.display = "block";
-  document.getElementById("addLink").style.display = "none";
-  document.getElementById("signOut").style.display = "none";
-  document.getElementById("note").style.display = "none";
-  document.querySelector(".app").style.background = "#5856d7";
-  document.querySelector(".app").style.borderColor = "#615de0";
-  document.getElementById("signIn").textContent = "Sign-in with Google";
-  document.querySelector(".app").style.borderRadius = "120px";
+  notLoggedInStyles();
 });
