@@ -1,5 +1,6 @@
 const startAuthProcess = (interactive = true) => {
   document.getElementById("signIn").textContent = "Signing in...";
+
   // Request an OAuth token from the Chrome Identity API.
   chrome.identity.getAuthToken({ interactive: !!interactive }, function (
     token

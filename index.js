@@ -3,7 +3,7 @@ import { db } from "./firebase.js";
 import { handleSignIn } from "./auth.js";
 import { loggedInStyles, notLoggedInStyles } from "./styles.js";
 
-let chromeUrl, chromeTitle, img, desc, note, fetchingData, loggedInUser;
+let loggedInUser;
 
 // Checks if user info is in storage
 chrome.storage.sync.get("user", function (result) {
@@ -34,62 +34,62 @@ firebase.auth().onAuthStateChanged((firebaseUser) => {
   });
 });
 
-// Get HTML from webpage and parse it
-const getHtml = async () => {
-  fetchingData = true;
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const url = new URL(tabs[0].url);
-    chromeUrl = url.href;
-    chromeTitle = tabs[0].title;
-  });
-
-  const response = await fetch("https://nicopellerin.io");
-  const html = await response.text();
-  const parser = new DOMParser();
-  const parsedHtml = parser.parseFromString(html, "text/html");
-
-  if (parsedHtml.querySelector("meta[property='og:image']")) {
-    img = parsedHtml
-      .querySelector("meta[property='og:image']")
-      .getAttribute("content");
-  }
-
-  if (parsedHtml.querySelector("meta[property='og:description']")) {
-    desc = parsedHtml
-      .querySelector("meta[property='og:description']")
-      .getAttribute("content");
-  }
-};
-
+// Get HTML from webpage and send it off to firebase
 const sendLinkData = async () => {
-  await getHtml();
+  let img, desc, note;
 
-  const dataUrl = {
-    url: chromeUrl || null,
-    title: chromeTitle || null,
-    image: img || null,
-    description: desc || null,
-    note: note,
-    created: Date.now(),
-  };
+  chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+    document.getElementById("addLink").textContent = "Saving link...";
 
-  // Push dataUrl object to Firebase
-  const usersRef = db.collection("users").doc(loggedInUser.uid);
+    const url = new URL(tabs[0].url);
+    const chromeUrl = url.href;
+    const chromeTitle = tabs[0].title;
 
-  // *** TODO *** - Fix structure
+    const response = await fetch(chromeUrl);
+    const html = await response.text();
+    const parser = new DOMParser();
+    const parsedHtml = parser.parseFromString(html, "text/html");
 
-  // usersRef.get().then((doc) => {
-  //   console.log(doc.data().links);
-  //   const previousLinks = doc.data().links || [];
-  //   const updatedLinks = [...previousLinks, dataUrl];
+    if (parsedHtml.querySelector("meta[property='og:image']")) {
+      img = parsedHtml
+        .querySelector("meta[property='og:image']")
+        .getAttribute("content");
+    }
 
-  //   usersRef.update({ links: updatedLinks });
-  // });
-  // fetchingData = false;
-  // setLinkPosted(true);
-  // setTimeout(() => {
-  //   setLinkPosted(false);
-  // }, 1000);
+    if (parsedHtml.querySelector("meta[property='og:description']")) {
+      desc = parsedHtml
+        .querySelector("meta[property='og:description']")
+        .getAttribute("content");
+    }
+
+    const data = {
+      url: chromeUrl || null,
+      title: chromeTitle || null,
+      image: img || null,
+      description: desc || null,
+      note: note || "",
+      created: Date.now(),
+    };
+
+    // Push dataUrl object to Firebase
+    const usersRef = db.collection("users").doc(loggedInUser.uid);
+
+    usersRef.get().then((doc) => {
+      const previousLinks = doc.data().links || [];
+      const updatedLinks = [data, ...previousLinks];
+
+      usersRef.update({ links: updatedLinks });
+    });
+
+    document.getElementById("addLink").style.backgroundColor = "#48BEA2";
+    document.getElementById("addLink").textContent = "Link saved!";
+    document.getElementById("note").value = "";
+
+    setTimeout(() => {
+      document.getElementById("addLink").style.backgroundColor = "#ff5c5b";
+      document.getElementById("addLink").textContent = "+ Add link";
+    }, 1000);
+  });
 };
 
 document.getElementById("signIn").addEventListener("click", () => {
