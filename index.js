@@ -36,7 +36,9 @@ firebase.auth().onAuthStateChanged((firebaseUser) => {
 
 // Get HTML from webpage and send it off to firebase
 const sendLinkData = async () => {
-  let img, desc, note;
+  let img, desc, rss;
+
+  const note = document.getElementById("note").value;
 
   chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
     document.getElementById("addLink").textContent = "Saving link...";
@@ -62,26 +64,37 @@ const sendLinkData = async () => {
         .getAttribute("content");
     }
 
-    const data = {
+    if (parsedHtml.querySelector("link[type='application/rss+xml']")) {
+      rss = parsedHtml
+        .querySelector("link[type='application/rss+xml']")
+        .getAttribute("href");
+    }
+
+    if (rss && !rss.startsWith("http")) {
+      rss = chromeUrl + rss;
+    }
+
+    const newLink = {
       url: chromeUrl || null,
+      rss: rss || null,
       title: chromeTitle || null,
       image: img || null,
       description: desc || null,
       note: note || "",
       created: Date.now(),
+      id: Math.random().toString(36).substr(2, 9),
     };
 
-    // Push dataUrl object to Firebase
-    const usersRef = db.collection("users").doc(loggedInUser.uid);
+    // Push latestLinks object to Firebase
+    const latestLinks = db
+      .collection("users")
+      .doc(loggedInUser.uid)
+      .collection("latest")
+      .doc(newLink.id);
 
-    usersRef.get().then((doc) => {
-      const previousLinks = doc.data().links || [];
-      const updatedLinks = [data, ...previousLinks];
+    latestLinks.set(newLink);
 
-      usersRef.update({ links: updatedLinks });
-    });
-
-    document.getElementById("addLink").style.backgroundColor = "#48BEA2";
+    document.getElementById("addLink").style.backgroundColor = "#00C29F";
     document.getElementById("addLink").textContent = "Link saved!";
     document.getElementById("note").value = "";
 
