@@ -1,6 +1,6 @@
 {
-  "short_name": "favlinkz",
-  "name": "favlinkz",
+  "short_name": "Favlinkz",
+  "name": "Favlinkz",
   "manifest_version": 2,
   "icons": {
     "16": "./assets/icon_20.png",
@@ -15,7 +15,6 @@
   "permissions": ["identity", "activeTab", "tabs", "storage"],
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
       "js": ["content.js"]
     }
   ],
